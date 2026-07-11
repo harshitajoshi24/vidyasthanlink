@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vidyalink — One great teacher. Every classroom.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blackboard: #14261F;
+    --blackboard-2: #1C352C;
+    --blackboard-3: #24443A;
+    --chalk: #F6F2E7;
+    --chalk-dim: #C9C2AE;
+    --amber: #E8B23D;
+    --amber-dim: #9C7C2E;
+    --ink: #16211C;
+    --line: rgba(246,242,231,0.14);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background: var(--blackboard);
+    color: var(--chalk);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+  img,svg{ display:block; max-width:100%; }
+
+  /* Texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(rgba(246,242,231,0.035) 1px, transparent 1px);
+    background-size: 22px 22px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(20,38,31,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px; max-width:1120px; margin:0 auto;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-size:20px; font-weight:600; }
+  .logo .dot{ width:9px; height:9px; border-radius:50%; background:var(--amber); }
+  .navlinks{ display:flex; gap:34px; font-size:14.5px; color:var(--chalk-dim); }
+  .navlinks a:hover{ color:var(--chalk); }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 20px; border-radius:3px; font-size:14px; font-weight:600;
+    border:1px solid transparent; cursor:pointer;
+  }
+  .btn-amber{ background:var(--amber); color:var(--ink); }
+  .btn-amber:hover{ background:#f0c15c; }
+  .btn-ghost{ border-color:var(--line); color:var(--chalk); }
+  .btn-ghost:hover{ border-color:var(--chalk-dim); }
+  .navcta{ display:none; }
+  @media(min-width:720px){ .navcta{ display:inline-flex; } }
+
+  /* HERO */
+  .hero{ position:relative; padding:96px 0 64px; overflow:hidden; z-index:1; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:0.06em;
+    color:var(--amber); border:1px solid var(--amber-dim); border-radius:20px;
+    padding:6px 14px; margin-bottom:26px; text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:clamp(38px,6vw,64px); line-height:1.04; max-width:820px;
+    letter-spacing:-0.02em;
+  }
+  .hero h1 em{ font-style:italic; color:var(--amber); }
+  .hero p.lede{
+    margin-top:24px; font-size:18px; color:var(--chalk-dim); max-width:560px;
+  }
+  .hero-ctas{ display:flex; gap:14px; margin-top:36px; flex-wrap:wrap; }
+
+  /* Broadcast diagram (signature element) */
+  .broadcast{
+    margin-top:76px; position:relative; height:280px;
+  }
+  .bc-center{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:118px; height:118px; border-radius:50%;
+    background:var(--blackboard-3); border:1.5px solid var(--amber);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    z-index:3;
+  }
+  .bc-center .mono{ font-size:10px; color:var(--amber); letter-spacing:0.06em; }
+  .bc-center .label{ font-family:'Fraunces',serif; font-size:14px; margin-top:2px; }
+  .bc-node{
+    position:absolute; width:78px; padding:10px 8px; border-radius:4px;
+    background:var(--blackboard-2); border:1px solid var(--line);
+    text-align:center; font-size:11px; color:var(--chalk-dim); z-index:3;
+  }
+  .bc-node .n{ display:block; color:var(--chalk); font-weight:600; font-size:12px; margin-bottom:2px; }
+  .bc-line{ position:absolute; top:50%; left:50%; height:1px; background:linear-gradient(90deg, var(--amber-dim), transparent); transform-origin:0 0; z-index:2; opacity:0.65; }
+  .bc-pulse{
+    position:absolute; width:5px; height:5px; border-radius:50%; background:var(--amber);
+    top:50%; left:50%; z-index:2; box-shadow:0 0 6px var(--amber);
+    animation: travel 3.4s linear infinite;
+  }
+  @keyframes travel{
+    0%{ opacity:0; }
+    5%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ opacity:0; }
+  }
+  @media(max-width:720px){ .broadcast{ display:none; } }
+
+  /* SECTION generic */
+  section{ position:relative; z-index:1; padding:88px 0; }
+  .section-head{ max-width:640px; margin-bottom:52px; }
+  .kicker{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:0.08em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:14px; display:block;
+  }
+  .section-head h2{ font-size:clamp(28px,4vw,40px); line-height:1.12; }
+  .section-head p{ margin-top:16px; color:var(--chalk-dim); font-size:16.5px; }
+
+  /* PROBLEM stats */
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .stat-card{ background:var(--blackboard); padding:32px 26px; }
+  .stat-card .num{ font-family:'Fraunces',serif; font-size:42px; color:var(--amber); }
+  .stat-card .desc{ margin-top:10px; font-size:14.5px; color:var(--chalk-dim); }
+  .stat-note{ margin-top:18px; font-size:12.5px; color:var(--chalk-dim); opacity:0.7; }
+
+  /* HOW IT WORKS */
+  .steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:36px; }
+  .step{ border-top:1px solid var(--line); padding-top:20px; }
+  .step .idx{ font-family:'IBM Plex Mono',monospace; color:var(--amber-dim); font-size:13px; }
+  .step h3{ font-size:21px; margin-top:10px; }
+  .step p{ margin-top:10px; color:var(--chalk-dim); font-size:15px; }
+
+  /* AUDIENCE cards */
+  .audience{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); }
+  @media(max-width:760px){ .audience{ grid-template-columns:1fr; } }
+  .aud-card{ background:var(--blackboard); padding:44px 38px; }
+  .aud-card .tag{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--amber); letter-spacing:0.06em; }
+  .aud-card h3{ font-size:26px; margin-top:14px; }
+  .aud-card ul{ margin-top:22px; list-style:none; }
+  .aud-card li{ padding:10px 0; border-top:1px solid var(--line); font-size:15px; color:var(--chalk-dim); display:flex; gap:10px; }
+  .aud-card li:first-child{ border-top:none; }
+  .aud-card li::before{ content:"—"; color:var(--amber-dim); flex-shrink:0; }
+
+  /* CLASS PREVIEW */
+  .preview{
+    border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--blackboard-2);
+  }
+  .preview-top{ display:flex; align-items:center; justify-content:space-between; padding:16px 22px; border-bottom:1px solid var(--line); }
+  .live-dot{ display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#E8635A; }
+  .live-dot span{ width:7px; height:7px; border-radius:50%; background:#E8635A; animation:pulse 1.6s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  .preview-body{ display:grid; grid-template-columns:1.4fr 1fr; }
+  @media(max-width:720px){ .preview-body{ grid-template-columns:1fr; } }
+  .preview-video{
+    background:
+      repeating-linear-gradient(45deg, rgba(246,242,231,0.02) 0 2px, transparent 2px 14px),
+      var(--blackboard);
+    min-height:280px; display:flex; align-items:center; justify-content:center; flex-direction:column;
+    border-right:1px solid var(--line);
+  }
+  .preview-video .teacher-tag{ font-family:'Fraunces',serif; font-size:19px; }
+  .preview-video .subj{ margin-top:6px; font-size:13px; color:var(--chalk-dim); }
+  .preview-list{ padding:20px; }
+  .preview-list .pl-item{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line); font-size:14px; }
+  .preview-list .pl-item:last-child{ border-bottom:none; }
+  .preview-list .college{ color:var(--chalk); }
+  .preview-list .students{ color:var(--chalk-dim); font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
+
+  /* CTA */
+  .cta-band{
+    background:var(--blackboard-2); border:1px solid var(--line); border-radius:6px;
+    padding:56px 44px; display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap;
+  }
+  .cta-band h2{ font-size:clamp(24px,3.2vw,32px); max-width:460px; }
+  .cta-form{ display:flex; gap:10px; flex-wrap:wrap; }
+  .cta-form input{
+    background:var(--blackboard); border:1px solid var(--line); color:var(--chalk);
+    padding:13px 16px; border-radius:3px; font-family:'Work Sans',sans-serif; font-size:14px; min-width:220px;
+  }
+  .cta-form input::placeholder{ color:var(--chalk-dim); }
+
+  footer{ border-top:1px solid var(--line); padding:36px 0; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; font-size:13px; color:var(--chalk-dim); }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><span class="dot"></span>Vidyalink</div>
+    <div class="navlinks">
+      <a href="#problem">Why</a>
+      <a href="#how">How it works</a>
+      <a href="#audience">Colleges &amp; Educators</a>
+      <a href="#demo">Live preview</a>
+    </div>
+    <a href="#cta" class="btn btn-amber navcta">Partner with us</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Concept · Built by a final-year BSc Data Science &amp; AI student</span>
+    <h1>One great teacher.<br><em>Every classroom.</em></h1>
+    <p class="lede">Vidyalink lets colleges — especially smaller and private institutes — bring in genuinely skilled subject educators to teach live, without hiring a full faculty seat for every subject.</p>
+    <div class="hero-ctas">
+      <a href="#cta" class="btn btn-amber">Partner with us</a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+
+    <div class="broadcast" id="broadcast" aria-hidden="true">
+      <div class="bc-center">
+        <span class="mono">LIVE</span>
+        <span class="label">Educator</span>
+      </div>
+      <!-- nodes placed via JS for angle math -->
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">The gap</span>
+      <h2>Good teaching shouldn't depend on which college you got into.</h2>
+      <p>Many smaller and private colleges struggle to hire and retain strong faculty in every subject. Students already know it — it's why so many turn to YouTube lectures the night before an exam.</p>
+    </div>
+    <div class="stat-grid reveal">
+      <div class="stat-card">
+        <div class="num">1</div>
+        <div class="desc">Subject expert can teach the same live class to multiple colleges at once, instead of each college hiring separately.</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">↓</div>
+        <div class="desc">Lower cost per college than a full-time faculty hire for a single low-enrolment subject.</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">↑</div>
+        <div class="desc">Higher engagement when the teacher is chosen for how well they explain — not just their availability.</div>
+      </div>
+    </div>
+    <p class="stat-note">Figures above are directional, illustrating the model's logic — not measured outcomes from a live deployment.</p>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">How it works</span>
+      <h2>From empty timetable slot to a live, taught class.</h2>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <span class="idx">01</span>
+        <h3>College lists the gap</h3>
+        <p>A college marks a subject or slot where they don't have strong in-house faculty — say, a specific elective or a subject only one weak professor currently covers.</p>
+      </div>
+      <div class="step">
+        <span class="idx">02</span>
+        <h3>An educator is matched</h3>
+        <p>Vidyalink matches the slot to a vetted subject educator — assessed on teaching clarity, not just credentials — who can commit to that recurring class time.</p>
+      </div>
+      <div class="step">
+        <span class="idx">03</span>
+        <h3>Class runs live, to many colleges</h3>
+        <p>The educator teaches once, live, streamed into classrooms at several colleges simultaneously — with local staff present for discipline, doubts, and attendance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">What a session looks like</span>
+      <h2>A live class, shared across colleges.</h2>
+    </div>
+    <div class="preview reveal">
+      <div class="preview-top">
+        <span class="live-dot"><span></span>LIVE NOW</span>
+        <span class="mono" style="font-size:12px;color:var(--chalk-dim);">Data Structures — Linked Lists</span>
+      </div>
+      <div class="preview-body">
+        <div class="preview-video">
+          <div class="teacher-tag">Prof. Ananya Rao</div>
+          <div class="subj">Streaming to 4 colleges · 212 students</div>
+        </div>
+        <div class="preview-list">
+          <div class="pl-item"><span class="college">Sahyadri Institute, Nashik</span><span class="students">58 joined</span></div>
+          <div class="pl-item"><span class="college">Ramgiri College, Kolhapur</span><span class="students">41 joined</span></div>
+          <div class="pl-item"><span class="college">St. Xavier's Tech, Pune</span><span class="students">67 joined</span></div>
+          <div class="pl-item"><span class="college">Netravati Polytechnic</span><span class="students">46 joined</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="audience">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Built for both sides</span>
+      <h2>A better deal for colleges. A bigger reach for educators.</h2>
+    </div>
+    <div class="audience reveal">
+      <div class="aud-card">
+        <span class="tag">FOR COLLEGES</span>
+        <h3>Fill teaching gaps without a full hire</h3>
+        <ul>
+          <li>Cover low-enrolment or specialist subjects without a dedicated faculty seat.</li>
+          <li>Pay per class or per semester slot, not a full salary.</li>
+          <li>Local staff still handle attendance, discipline, and in-person doubt sessions.</li>
+        </ul>
+      </div>
+      <div class="aud-card">
+        <span class="tag">FOR EDUCATORS</span>
+        <h3>Teach once, reach many classrooms</h3>
+        <ul>
+          <li>One prepared lecture is delivered live to several colleges — same effort, wider income.</li>
+          <li>Selected on teaching clarity, with student ratings visible upfront.</li>
+          <li>Consistent recurring slots instead of one-off gig work.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <h2>Thinking about piloting this at your college, or teaching on Vidyalink?</h2>
+      <form class="cta-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Noted — thank you';">
+        <input type="email" placeholder="you@college.edu" required>
+        <button class="btn btn-amber" type="submit">Get in touch</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <span><span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-right:8px;"></span>Vidyalink — a concept in progress</span>
+    <span>Built as a student project · Pune, Maharashtra</span>
+  </div>
+</footer>
+
+<script>
+  // Position broadcast nodes on a circle around the center
+  const bc = document.getElementById('broadcast');
+  if (bc) {
+    const nodes = [
+      { label: 'Sahyadri Institute', n: 'A' },
+      { label: 'Ramgiri College', n: 'B' },
+      { label: "St. Xavier's Tech", n: 'C' },
+      { label: 'Netravati Polytechnic', n: 'D' },
+      { label: 'Deccan College', n: 'E' }
+    ];
+    const radius = 190;
+    const w = bc.clientWidth || 900;
+    const cx = w/2, cy = 140;
+    nodes.forEach((node, i) => {
+      const angle = (-100 + i * (200/(nodes.length-1))) * Math.PI/180;
+      const x = cx + radius * Math.cos(angle);
+      const y = cy + radius * Math.sin(angle) * 0.8;
+
+      const el = document.createElement('div');
+      el.className = 'bc-node';
+      el.style.left = (x - 39) + 'px';
+      el.style.top = (y - 22) + 'px';
+      el.innerHTML = `<span class="n">${node.n}</span>${node.label}`;
+      bc.appendChild(el);
+
+      const dx = x - cx, dy = y - cy;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const lineAngle = Math.atan2(dy, dx) * 180/Math.PI;
+
+      const line = document.createElement('div');
+      line.className = 'bc-line';
+      line.style.width = dist + 'px';
+      line.style.transform = `rotate(${lineAngle}deg)`;
+      bc.appendChild(line);
+
+      const pulse = document.createElement('div');
+      pulse.className = 'bc-pulse';
+      pulse.style.animationDelay = (i * 0.6) + 's';
+      pulse.style.setProperty('--dx', dx + 'px');
+      pulse.style.setProperty('--dy', dy + 'px');
+      pulse.style.transform = `translate(0,0)`;
+      // custom keyframe via JS animation
+      pulse.animate([
+        { transform: 'translate(0,0)', opacity: 0 },
+        { transform: 'translate(0,0)', opacity: 1, offset: 0.08 },
+        { transform: `translate(${dx}px, ${dy}px)`, opacity: 1, offset: 0.92 },
+        { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
+      ], { duration: 3400, iterations: Infinity, delay: i * 500 });
+      bc.appendChild(pulse);
+    });
+  }
+
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
